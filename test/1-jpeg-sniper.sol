@@ -6,6 +6,7 @@ import {Test} from "forge-std/Test.sol";
 import {console} from "forge-std/console.sol";
 // core contracts
 import {FlatLaunchpeg} from "src/jpeg-sniper/FlatLaunchpeg.sol";
+import {ExploitJpegSniper} from "src/jpeg-sniper/ExploitJpegSniper.sol";
 
 
 contract Testing is Test {
@@ -17,6 +18,7 @@ contract Testing is Test {
     address adminUser = makeAddr('adminUser'); // should not be used
 
     FlatLaunchpeg flatLaunchpeg;
+    ExploitJpegSniper exploit;
 
     /// preliminary state
     function setUp() public {
@@ -34,9 +36,10 @@ contract Testing is Test {
 
     /// solves the challenge
     function testChallengeExploit() public {
-        vm.startPrank(attacker,attacker);
+        vm.startPrank(attacker, attacker);
 
         // implement solution here
+        exploit = new ExploitJpegSniper(address(flatLaunchpeg));
 
         vm.stopPrank();
         validation();

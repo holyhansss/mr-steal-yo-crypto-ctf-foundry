@@ -3,6 +3,11 @@ pragma solidity ^0.8.4;
 
 import "./BaseLaunchpegNFT.sol";
 
+// Hopegs the NFT marketplace is launching the hyped NFT collection BOOTY soon.
+// They have a wrapper contract: FlatLaunchpeg, which handles the public sale mint for the collection.
+// Your task is to bypass their safeguards and max mint the entire collection in a single tx.
+
+
 
 /// @dev hopegs NFT exchange wrapper to manage mint
 contract FlatLaunchpeg is BaseLaunchpegNFT {
