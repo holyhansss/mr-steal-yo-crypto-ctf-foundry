@@ -8,6 +8,12 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
 
+// Safu Labs has just released their SafuVault, the `safest` yield generating vault of all time,
+// or so their twitter account says.
+// Their SafuVault expects deposits of USDC and has already gotten 10,000 USDC from users.
+// You know the drill, drain the funds (at least 90%). You start with 10,000 USDC.
+
+
 /// @dev interface for interacting with the strategy
 interface IStrategy {
     function want() external view returns (IERC20);
@@ -69,7 +75,7 @@ contract SafuVault is ERC20, Ownable, ReentrancyGuard {
 
         uint256 shares;
         if (totalSupply() == 0) {
-            shares = _amount;
+            shares = _amount; // 첫번째 user가 10000 USDC deposit 함, 현재 share은 10000 USDC
         } else {
             shares = (_amount * totalSupply()) / (_pool);
         }
@@ -116,7 +122,7 @@ contract SafuVault is ERC20, Ownable, ReentrancyGuard {
         strategy.beforeDeposit();
 
         uint256 _pool = balance();
-        IERC20(token).safeTransferFrom(msg.sender, address(this), _amount);
+        IERC20(token).safeTransferFrom(msg.sender, address(this), _amount); // 그냥 token인데? what if it is a different token then USDC, mal token
         earn();
         uint256 _after = balance();
         _amount = _after - _pool; // Additional check for deflationary tokens
