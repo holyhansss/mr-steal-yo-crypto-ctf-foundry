@@ -66,7 +66,8 @@ contract AssetWrapper is AssetHolder, Ownable {
         address assetAddress
     ) public {
         require(isWhitelisted(assetAddress), "Wrapper: asset not whitelisted");
-        _wrap(assetOwner, assetAddress, nftId);
+        // @audit 여기서 받으면서 ERC1155 selector에서 뭔가 할 수 있을 것 같은데...
+        _wrap(assetOwner, assetAddress, nftId); 
 
         IGameAsset asset = IGameAsset(assetAddress);
         address owner = asset.ownerOf(nftId);
@@ -74,7 +75,7 @@ contract AssetWrapper is AssetHolder, Ownable {
         // can be removed to allow wrapping to any account, saving gas on transfer
         require(assetOwner == owner, "Wrapper: incorrect receiver for wrap");
 
-        require(
+        require( // @audit-issue then check msg.sender
             owner == msg.sender ||
                 isApprovedForAll(owner, msg.sender) || // approval for all WLed contracts
                 asset.isApprovedForAll(owner, msg.sender), // approval for this WL contract
@@ -98,7 +99,7 @@ contract AssetWrapper is AssetHolder, Ownable {
         IGameAsset asset = IGameAsset(assetAddress);
 
         require(
-            assetOwner == msg.sender ||
+            assetOwner == msg.sender || // @audit leak of validation
                 isApprovedForAll(assetOwner, msg.sender) || // approval for all WLed contracts
                 asset.isApprovedForAll(assetOwner, msg.sender), // approval for this WL contract
             "Wrapper: asset if not owned by sender"
